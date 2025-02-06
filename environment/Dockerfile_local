@@ -1,0 +1,40 @@
+FROM continuumio/miniconda3:23.9.0-0
+LABEL maintainer="Camilo Laiton <camilo.laiton@alleninstitute.org>"
+
+# Install only necessary system dependencies in one step and clean up
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
+    libopenmpi-dev \
+    wget && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create Conda environment without default packages to reduce size
+RUN conda create -n convert_to_zarr python=3.8 --no-default-packages -y && \
+    conda clean --all --yes
+
+# Set the environment path instead of using SHELL
+ENV PATH="/opt/conda/envs/convert_to_zarr/bin:$PATH"
+
+# Install all Python dependencies in a single step to optimize layer caching
+RUN pip install --no-cache-dir \
+    'tifffile < 2022.4.22' \
+    xarray_multiscale==1.1.0 \
+    argschema==3.0.4 \
+    mpi4py \
+    bokeh==2.4.2 \
+    zarr==2.16.1 \
+    pint==0.20.1 \
+    xmltodict==0.13.0 \
+    natsort==8.2.0 \
+    pims==0.6.1 \
+    dask[distributed]==2022.11.1 \
+    ome-zarr==0.8.2 \
+    psutil==5.9.5 \
+    matplotlib==3.7.3 \
+    imagecodecs[all]==2023.3.16 \
+    dask-image \
+    awscli
+
+CMD ["bash"]
