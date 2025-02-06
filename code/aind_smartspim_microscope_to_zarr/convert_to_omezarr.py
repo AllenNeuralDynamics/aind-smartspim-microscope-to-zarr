@@ -31,7 +31,7 @@ from numcodecs import blosc
 from ome_zarr.format import CurrentFormat
 from ome_zarr.io import parse_url
 from ome_zarr.writer import write_multiscales_metadata
-from readers_writers import PngReader
+from readers_writers import PngReader, TiffReader
 from skimage.io import imread as sk_imread
 from zarr_utilities import *
 
@@ -745,8 +745,32 @@ def convert_stacks_to_ome_zarr(channel_path, logger, output_path, xyz_resolution
         curr_col = channel_path.joinpath(col)
         for row in os.listdir(curr_col):
             curr_row = curr_col.joinpath(row)
-            delayed_stack = PngReader(data_path=f"{curr_row}/*.png").as_dask_array()
-            print(f"Writing curr stack {curr_row}: {delayed_stack}")
+
+            stack_files = list(Path(curr_row).glob("*"))
+
+            # Getting extension
+            if not len(stack_files):
+                raise FileNotFoundError(f"No files found in stack {curr_row}")
+
+            file_extension = Path(stack_files[0]).suffix
+
+            curr_reader = None
+
+            if file_extension == ".png":
+                curr_reader = PngReader
+
+            elif file_extension == ".tif" or file_extension == ".tiff":
+                curr_reader = TiffReader
+
+            else:
+                raise NotImplementedError(
+                    f"File format {file_extension} not supported!"
+                )
+
+            delayed_stack = curr_reader(data_path=f"{curr_row}/*.png").as_dask_array()
+            print(
+                f"Writing curr stack {curr_row}: {delayed_stack} - Extension {file_extension}"
+            )
 
             smartspim_channel_zarr_writer(
                 image_data=delayed_stack,
