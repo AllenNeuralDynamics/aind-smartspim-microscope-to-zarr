@@ -21,7 +21,7 @@ import numpy as np
 import pims
 import xarray_multiscale
 import zarr
-from blocked_zarr_writer import BlockedArrayWriter
+from .blocked_zarr_writer import BlockedArrayWriter
 from dask import config as da_cfg
 from dask.array.core import Array
 from dask.base import tokenize
@@ -31,9 +31,9 @@ from numcodecs import blosc
 from ome_zarr.format import CurrentFormat
 from ome_zarr.io import parse_url
 from ome_zarr.writer import write_multiscales_metadata
-from readers_writers import ImageReaderFactory
+from .readers_writers import ImageReaderFactory
 from skimage.io import imread as sk_imread
-from zarr_utilities import *
+from .zarr_utilities import *
 
 
 def set_dask_config(dask_folder: str):
