@@ -19,9 +19,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Creating a new conda environment for argschema python bug
-RUN conda create -n smartspim_fusion python=3.8
+RUN conda create -n convert_to_zarr python=3.8
 
-SHELL ["conda", "run", "-n", "smartspim_fusion", "/bin/bash", "-c"]
+SHELL ["conda", "run", "-n", "convert_to_zarr", "/bin/bash", "-c"]
 
 RUN pip install -U --no-cache-dir \
     'tifffile < 2022.4.22' \
