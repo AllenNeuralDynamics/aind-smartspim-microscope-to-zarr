@@ -1,0 +1,7 @@
+metadata_version: 1
+name: aind-smartspim-microscope-to-zarr
+description: Capsule that converts TIFF/PNG to OMEzarr format.
+tags:
+- smartspim
+authors:
+- name: Camilo Laiton
