@@ -1,7 +1,6 @@
 FROM continuumio/miniconda3:23.9.0-0
 LABEL maintainer="Camilo Laiton <camilo.laiton@alleninstitute.org>"
 
-# Install only necessary system dependencies in one step and clean up
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
@@ -10,14 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget && \
     rm -rf /var/lib/apt/lists/*
 
-# Create Conda environment without default packages to reduce size
 RUN conda create -n convert_to_zarr python=3.8 --no-default-packages -y && \
     conda clean --all --yes
 
-# Set the environment path instead of using SHELL
 ENV PATH="/opt/conda/envs/convert_to_zarr/bin:$PATH"
 
-# Install all Python dependencies in a single step to optimize layer caching
 RUN pip install --no-cache-dir \
     'tifffile < 2022.4.22' \
     xarray_multiscale==1.1.0 \

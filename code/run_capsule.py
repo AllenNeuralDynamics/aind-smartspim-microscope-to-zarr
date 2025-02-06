@@ -1,7 +1,6 @@
-""" top level run script """
+""" Convert files to OMEZarr """
 
-def run():
-    """ basic run function """
-    pass
+from aind_smartspim_microscope_to_zarr.convert_to_omezarr import main
 
-if __name__ == "__main__": run()
+if __name__ == "__main__":
+    main()
